@@ -111,6 +111,7 @@ class EquipmentService
                 if (!$validator->fails()) {
                     $tmp = $validator->validated();
                     $tmp['created_at'] = now();
+					$tmp['updated_at'] = now();
                     $resultData[] = $tmp;
                 } else {
                     $validator->errorInput = $equipment;
@@ -148,6 +149,7 @@ class EquipmentService
                 if (!$validator->fails()) {
                     $tmp = $validator->validated();
                     $tmp['created_at'] = now();
+					$tmp['updated_at'] = now();
                     $resultData[] = $tmp;
                 } else {
                     $validator->errorInput = $equipment;
