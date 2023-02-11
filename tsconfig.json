@@ -1,0 +1,23 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "target": "ES5",
+        "sourceMap": true,
+        "useDefineForClassFields": true,
+        "experimentalDecorators": true,
+        "noImplicitAny": false,
+        "importHelpers": true,
+        "skipLibCheck": true,
+    },
+    "exclude": [
+        "node_modules",
+        "app",
+        "bootstrap",
+        "public",
+        "vendor",
+
+    ],
+    "include": [
+        "resources/ts/**/*"
+    ]
+}
