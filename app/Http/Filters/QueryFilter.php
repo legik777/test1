@@ -32,7 +32,10 @@ abstract class QueryFilter
 
     public function filters()
     {
-        return $this->request->query();
+        $params = $this->request->query();
+        Unset($params['page']);
+        Unset($params['per_page']);
+        return $params;
     }
 
     protected function paramToArray($param)
