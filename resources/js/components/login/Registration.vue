@@ -71,12 +71,11 @@ export default {
             return new Promise((resolve) => setTimeout(resolve, milliseconds));
         },
         register() {
-
             axios.get('/sanctum/csrf-cookie')
                 .then(response => {
                     axios.post('/register',{email:this.email, name: this.name, password: this.password, password_confirmation: this.password_confirmation})
                     .then(res=>{
-                        console.log(res)
+                        this.$router.push({name:'main'})
                         localStorage.setItem('x_xsrf_token', res.config.headers['X-XSRF-TOKEN'])
                     })
                     .catch(err=>{

@@ -20,6 +20,15 @@ export const useUserStore = defineStore("UserStore", {
                 this.router.push({name:'user.login'})
             });
         },
+
+
+        /**
+         *
+         *
+         * @param {*} email
+         * @param {*} password
+         * @param {*} remember
+         */
         login(email,password,remember) {
             this.loginInProcess = true
             axios.get('/sanctum/csrf-cookie').then(() => {

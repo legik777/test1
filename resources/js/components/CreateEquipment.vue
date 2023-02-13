@@ -4,9 +4,10 @@
             <div class="w-3/4">
                 <div class="w-full justify-between inline-flex">
                     <div @click="this.addRow() " class="cursor-pointer rounded border-solid border-2 border-gray-400  mx-3 p-1">Добавить строку+</div>
-                    <div @click="this.addEquipments()" class="cursor-pointer rounded border-solid border-2 border-gray-400  mx-3 p-1">Сохранить</div>
+                    <div @click="this.useEquipment.createEquipments(this.equipments)" class="cursor-pointer rounded border-solid border-2 border-gray-400  mx-3 p-1">Сохранить</div>
                 </div>
-                <div class="w-full text-red-900 my-3 mx-2 items-center justify-center flex">{{ msg }}</div>
+                <div class="w-full text-red-900 my-3 mx-2 items-center justify-center flex">{{ this.useEquipment.EquipmentErrors }}</div>
+                <div class="w-full text-red-900 my-3 mx-2 items-center justify-center flex">{{ this.useEquipment.EquipmentMessage }}</div>
                 <div class="w-full justify-center items-center flex">
                     <table>
                         <template v-for="row, index in equipmentsCount" :key="index">
@@ -28,13 +29,18 @@
 </template>
 
 <script>
+import {useEquipmentStore} from "../stores/EquipmentStore"
+
 export default {
     name: 'CreateEquipment',
+    setup() {
+        const useEquipment = useEquipmentStore();
+        return { useEquipment};
+    },
     data() {
         return {
             equipmentsCount: 0,
             equipments: [],
-            msg:null,
         }
     },
     methods: {
@@ -42,7 +48,7 @@ export default {
             this.equipmentsCount++
             this.equipments.push({ 'equipment_type_id': null, 'serial_number': null, 'note': null })
         },
-        addEquipments() {
+/*         addEquipments() {
             this.error = null;
             this.axios.post('/api/equipment', { 'data': this.equipments })
                 .then(response => {
@@ -52,7 +58,7 @@ export default {
                         this.msg = response.data
                     }
                 })
-        }
+        } */
     },
     mounted() {
         this.addRow()
