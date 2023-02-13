@@ -25,9 +25,9 @@ class EquipmentService
     /**
      * @param int $id
      *
-     * @return IndexResource|Response
+     * @return array
      */
-    public function show(int $id)
+    public function show(int $id): array
     {
         try {
             $status = 'complete';
@@ -42,9 +42,9 @@ class EquipmentService
     /**
      * @param Request $request
      *
-     * @return Response
+     * @return array
      */
-    public function store(Request $request)
+    public function store(Request $request): array
     {
         $input = $request->input('data');
         try {
@@ -63,9 +63,9 @@ class EquipmentService
      * @param mixed   $id
      * @param Request $request
      *
-     * @return [type]
+     * @return array
      */
-    public function update($id, Request $request)
+    public function update($id, Request $request): array
     {
         $input = $request->input('data');
         try {
@@ -84,9 +84,9 @@ class EquipmentService
     /**
      * @param int $id
      *
-     * @return Response
+     * @return array
      */
-    public function destroy(int $id)
+    public function destroy(int $id): array
     {
         if (Equipment::find($id)) {
             Equipment::destroy($id);
@@ -102,9 +102,9 @@ class EquipmentService
     /**
      * @param array $input
      *
-     * @return array|ValidationExtendException
+     * @return array|Exception
      */
-    public function validateArrayEquipment(array $input): array|ValidationExtendException
+    public function validateArrayEquipment(array $input): array|Exception
     {
         $resultData = [];
         foreach ($input as $equipment) {
