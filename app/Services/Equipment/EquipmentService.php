@@ -21,6 +21,7 @@ use App\Http\Resources\Equipment\StoreResource;
  */
 class EquipmentService
 {
+    private $errors = null;
     /**
      * @param int $id
      *
@@ -53,7 +54,7 @@ class EquipmentService
             $message = 'store complete';
         } catch (Exception $e) {
             $status = 'error';
-            $message = $e->getMessage();
+            $message = $this->errors;
         }
         return (['status' => $status,'message' => $message]);
     }
@@ -130,11 +131,21 @@ class EquipmentService
                     $resultData[] = $tmp;
                 } else {
                     $validator->errorInput = $equipment;
-                    throw (new ValidationExtendException($validator));
+                    $validatorErrors[] = $validator;
                 }
             }
         }
-        return $resultData;
+
+        if ($validatorErrors) {
+            foreach ($validatorErrors as $validator) {
+                $validatorError = new ValidationExtendException($validator);
+                $errors[] = $validatorError->getMessage();
+            }
+            $this->errors = $errors;
+            throw (new Exception());
+        } else {
+            return $resultData;
+        }
     }
 
     /**
