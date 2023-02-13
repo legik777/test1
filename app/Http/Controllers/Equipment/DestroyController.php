@@ -10,6 +10,7 @@ class DestroyController extends BaseController
 {
     public function __invoke($id)
     {
-        return $this->equipmentService->destroy($id);
+        $result = $this->equipmentService->destroy($id);
+        return response($result, 200) ;
     }
 }

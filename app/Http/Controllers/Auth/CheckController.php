@@ -11,6 +11,6 @@ class CheckController extends Controller
     public function __invoke()
     {
         $test = Auth::check();
-        return response(['data'=>$test,'user'=>Auth::user()],200);
+        return response(['data'=>$test,'user'=>Auth::user()], 200);
     }
 }

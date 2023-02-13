@@ -10,6 +10,6 @@ class CheckLoginController extends Controller
 {
     public function __invoke(Request $request)
     {
-        return response(Auth::user(),200);
+        return response(Auth::user(), 200);
     }
 }

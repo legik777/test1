@@ -8,8 +8,9 @@ use Illuminate\Http\Request;
 
 class UpdateController extends BaseController
 {
-    public function __invoke($id,Request $request)
+    public function __invoke($id, Request $request)
     {
-        return $this->equipmentService->update($id,$request);
+        $result = $this->equipmentService->update($id, $request);
+        return response($result, 200);
     }
 }

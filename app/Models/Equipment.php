@@ -12,5 +12,6 @@ class Equipment extends Model
     use HasFactory;
     use SoftDeletes;
     use Filterable;
+
     protected $guarded = false;
 }

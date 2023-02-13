@@ -8,6 +8,7 @@ class StoreController extends BaseController
 {
     public function __invoke(Request $request)
     {
-        return  $this->equipmentService->store($request);
+        $result = $this->equipmentService->store($request);
+        return response($result, 200);
     }
 }

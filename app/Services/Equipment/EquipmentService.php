@@ -13,6 +13,7 @@ use App\Services\Regex\Constructor;
 use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Resources\Equipment\IndexResource;
+use App\Http\Resources\Equipment\StoreResource;
 
 /**
  * EquipmentService
@@ -25,14 +26,16 @@ class EquipmentService
      *
      * @return IndexResource|Response
      */
-    public function show(int $id): IndexResource|Response
+    public function show(int $id)
     {
         try {
-            $result = Equipment::findOrFail($id);
-            return new IndexResource($result);
+            $status = 'complete';
+            $message = Equipment::findOrFail($id);
         } catch (ModelNotFoundException $e) {
-            return response(['status' => 'error', 'message' => $e->getMessage()], 200);
+            $status = 'error';
+            $message = $e->getMessage();
         }
+        return (['status' => $status,'message' => $message]);
     }
 
     /**
@@ -40,20 +43,23 @@ class EquipmentService
      *
      * @return Response
      */
-    public function store(Request $request): Response
+    public function store(Request $request)
     {
         $input = $request->input('data');
         try {
             $result = $this->validateArrayEquipment($input);
             Equipment::insert($result);
-            return response('complete', 200);
+            $status = 'complete';
+            $message = 'store complete';
         } catch (Exception $e) {
-            return response($e->getMessage(), 200);
+            $status = 'error';
+            $message = $e->getMessage();
         }
+        return (['status' => $status,'message' => $message]);
     }
 
     /**
-     * @param mixed $id
+     * @param mixed   $id
      * @param Request $request
      *
      * @return [type]
@@ -65,10 +71,13 @@ class EquipmentService
             $equipment = Equipment::find($id);
             $result = $this->validateEquipment($input, $id);
             $equipment->update($result[0]);
-            return response('complete', 200);
+            $status = 'complete';
+            $message = 'update complete';
         } catch (Exception $e) {
-            return response($e->getMessage(), 200);
+            $status = 'error';
+            $message = $e->getMessage();
         }
+        return (['status' => $status,'message' => $message]);
     }
 
     /**
@@ -76,14 +85,17 @@ class EquipmentService
      *
      * @return Response
      */
-    public function destroy(int $id):Response
+    public function destroy(int $id)
     {
-        if(Equipment::find($id)) {
+        if (Equipment::find($id)) {
             Equipment::destroy($id);
+            $status = 'complete';
+            $message = 'destroy complete';
         } else {
-            return response(['data'=>'Delete error'],200);
+            $status = 'error';
+            $message = 'record with this id does not exist';
         }
-        return response(['data'=>'complete'],200);
+        return (['status' => $status,'message' => $message]);
     }
 
     /**
@@ -91,7 +103,7 @@ class EquipmentService
      *
      * @return array|ValidationExtendException
      */
-    public function validateArrayEquipment(array $input):array|ValidationExtendException
+    public function validateArrayEquipment(array $input): array|ValidationExtendException
     {
         $resultData = [];
         foreach ($input as $equipment) {
@@ -99,7 +111,9 @@ class EquipmentService
                 $serialNumberMask = $this->getMask($equipment['equipment_type_id']);
                 $regexConstructor = new Constructor();
                 $regex = $regexConstructor->make($serialNumberMask);
-                $validator = Validator::make($equipment, [
+                $validator = Validator::make(
+                    $equipment,
+                    [
                     'equipment_type_id' => 'required|integer',
                     'serial_number' => [
                         'required', Rule::unique('App\Models\Equipment')->where(
@@ -107,11 +121,12 @@ class EquipmentService
                         ), 'regex:/' . $regex . '/',
                     ],
                     'note' => 'string'
-                ]);
+                    ]
+                );
                 if (!$validator->fails()) {
                     $tmp = $validator->validated();
                     $tmp['created_at'] = now();
-					$tmp['updated_at'] = now();
+                    $tmp['updated_at'] = now();
                     $resultData[] = $tmp;
                 } else {
                     $validator->errorInput = $equipment;
@@ -128,7 +143,7 @@ class EquipmentService
      *
      * @return array|ValidationExtendException
      */
-    public function validateEquipment(array $input, $id):array|ValidationExtendException
+    public function validateEquipment(array $input, $id): array|ValidationExtendException
     {
         $resultData = [];
         foreach ($input as $equipment) {
@@ -136,7 +151,9 @@ class EquipmentService
                 $serialNumberMask = $this->getMask($equipment['equipment_type_id']);
                 $regexConstructor = new Constructor();
                 $regex = $regexConstructor->make($serialNumberMask);
-                $validator = Validator::make($equipment, [
+                $validator = Validator::make(
+                    $equipment,
+                    [
                     'equipment_type_id' => 'required|integer',
                     'serial_number' => [
                         'required',
@@ -145,11 +162,11 @@ class EquipmentService
                         )->ignore($id), 'regex:/' . $regex . '/',
                     ],
                     'note' => 'string'
-                ]);
+                    ]
+                );
                 if (!$validator->fails()) {
                     $tmp = $validator->validated();
                     $tmp['created_at'] = now();
-					$tmp['updated_at'] = now();
                     $resultData[] = $tmp;
                 } else {
                     $validator->errorInput = $equipment;
@@ -180,7 +197,6 @@ class EquipmentService
         $validator = Validator::make($equipment, ['equipment_type_id' => 'required|integer',]);
         if ($validator->fails()) {
             $validator->errorInput = $equipment;
-            dd('t2');
             throw (new ValidationExtendException($validator));
         } else {
             if (EquipmentType::where('id', $equipment['equipment_type_id'])->exists()) {
@@ -190,5 +206,4 @@ class EquipmentService
             }
         }
     }
-
 }

@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
+
 class ValidationExtendException extends Exception
 {
     /**
@@ -85,8 +86,7 @@ class ValidationExtendException extends Exception
     protected static function summarize($validator)
     {
         $messages = $validator->errors()->all();
-        // dd($validator->errorInput);
-        if (! count($messages) || ! is_string($messages[0])) {
+        if (!count($messages) || !is_string($messages[0])) {
             return $validator->getTranslator()->get('The given data was invalid.');
         }
 
@@ -95,11 +95,11 @@ class ValidationExtendException extends Exception
         if ($count = count($messages)) {
             $pluralized = $count === 1 ? 'error' : 'errors';
 
-            $message .= ' '.$validator->getTranslator()->get("(and :count more $pluralized)", compact('count'));
+            $message .= ' ' . $validator->getTranslator()->get("(and :count more $pluralized)", compact('count'));
         }
-        if(count($validator->errorInput) != 0){
+        if (count($validator->errorInput) != 0) {
             $error = json_encode($validator->errorInput);
-            $message .= ' '. $validator->getTranslator()->get("(The given data :error was invalid.)",compact('error'));
+            $message .= ' ' . $validator->getTranslator()->get("(The given data :error was invalid.)", compact('error'));
         }
         return $message;
     }

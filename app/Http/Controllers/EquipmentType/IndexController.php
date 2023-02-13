@@ -10,9 +10,10 @@ use Illuminate\Http\Request;
 
 class IndexController extends Controller
 {
-    public function __invoke(EquipmentTypeFilter $filters,Request $request)
+    public function __invoke(EquipmentTypeFilter $filters, Request $request)
     {
-        $result = EquipmentType::filter($filters)->paginate($request->query('per_page'),['*'],'page',$request->query('page'));
+        $result = EquipmentType::filter($filters)->
+        paginate($request->query('per_page'), ['*'], 'page', $request->query('page'));
         return IndexResource::collection($result);
     }
 }

@@ -4,20 +4,35 @@ namespace App\Http\Filters;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
+/**
+ * QueryFilter
+ */
 abstract class QueryFilter
 {
-    protected $request;
+    protected Request $request;
 
-    protected $builder;
+    protected Builder $builder;
 
     protected $delimiter = ',';
 
+    /**
+     * __construct
+     *
+     * @param  Request $request
+     * @return void
+     */
     public function __construct(Request $request)
     {
         $this->request = $request;
     }
 
-    public function apply(Builder $builder)
+    /**
+     * apply
+     *
+     * @param  Builder $builder
+     * @return void
+     */
+    public function apply(Builder $builder):Builder
     {
         $this->builder = $builder;
 
@@ -30,7 +45,12 @@ abstract class QueryFilter
         return $this->builder;
     }
 
-    public function filters()
+    /**
+     * filters
+     *
+     * @return array
+     */
+    public function filters():array
     {
         $params = $this->request->query();
         Unset($params['page']);
@@ -38,7 +58,13 @@ abstract class QueryFilter
         return $params;
     }
 
-    protected function paramToArray($param)
+    /**
+     * paramToArray
+     *
+     * @param  mixed $param
+     * @return void
+     */
+    protected function paramToArray(string $param)
     {
         return explode($this->delimiter, $param);
     }
